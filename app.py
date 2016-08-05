@@ -40,7 +40,7 @@ def hello():
 
     elif(user_state_dict[username]["state"] == 1):
         if(isInt(request.form["text"]) and int(request.form["text"]) < 4 and int(request.form["text"]) > 0):
-            responseDict = {"attachments": [{"text":" ", "image_url":user_state_dict[username]["last_results"][int(request.form["text"])]}]}
+            responseDict = {"attachments": [{"text":" ", "image_url":user_state_dict[username]["last_results"][int(request.form["text"]) - 1]}]}
             responseDict["response_type"] = "in_channel"
             responseDict["text"] = "@"+username+": "+ user_state_dict[username]["last_query"]
 
@@ -48,8 +48,11 @@ def hello():
 
             print responseDict
             return jsonify(**responseDict)
+
         if(request.form["text"] == user_state_dict[username]["last_query"]):
+            print "HELLO"
             results = returnSearch(user_state_dict[username]["offset"], request.form["text"], username)
+            print "HIII"
             responseDict = {"attachments": []}
             for link in results:
                 responseDict["attachments"].append({"image_url": link, "text": "Gif"})
@@ -61,8 +64,10 @@ def hello():
                 responseDict["attachments"].append({"image_url": link, "text": "Gif"})
             responseDict["text"] = "Response"
 
+        return jsonify(**responseDict)
 
-    return status.HTTP_404_NOT_FOUND
+
+    return "",status.HTTP_404_NOT_FOUND
 
 def isInt(value):
   try:
@@ -84,7 +89,7 @@ def returnSearch(offset, query, username):
     data = r.json()
     #data["data"]
     for giphy in data["data"]:
-        print(giphy)
+        #print(giphy)
        # dadict = json.loads(giphy)
         links.append(giphy['images']['fixed_height']['url'])
 

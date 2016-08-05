@@ -43,8 +43,24 @@ def hello():
             responseDict = {"attachments": [{"text":" ", "image_url":user_state_dict[username]["last_results"][int(request.form["text"])]}]}
             responseDict["response_type"] = "in_channel"
             responseDict["text"] = "@"+username+": "+ user_state_dict[username]["last_query"]
+
+            user_state_dict[username]["state"] = 0
+
             print responseDict
             return jsonify(**responseDict)
+        if(request.form["text"] == user_state_dict[username]["last_query"]):
+            results = returnSearch(user_state_dict[username]["offset"], request.form["text"], username)
+            responseDict = {"attachments": []}
+            for link in results:
+                responseDict["attachments"].append({"image_url": link, "text": "Gif"})
+            responseDict["text"] = "Response"
+        else:
+            results = returnSearch(0, request.form["text"], username)
+            responseDict = {"attachments": []}
+            for link in results:
+                responseDict["attachments"].append({"image_url": link, "text": "Gif"})
+            responseDict["text"] = "Response"
+
 
     return status.HTTP_404_NOT_FOUND
 

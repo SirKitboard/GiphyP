@@ -3,11 +3,12 @@ import requests
 from os.path import join, dirname
 from flask.ext.api import status
 import json
-
 import os
 from dotenv import Dotenv
 dotenv = Dotenv(os.path.join(os.path.dirname(__file__), ".env")) # Of course, replace by your correct path
 os.environ.update(dotenv)
+
+application = Flask(__name__)
 
 SLACK_TOKEN = os.environ.get("SLACK_TOKEN")
 
@@ -17,8 +18,13 @@ user_state_dict = {
 
 }
 
-@app.route("/", methods=["POST"])
+@application.route("/")
 def hello():
+    return "<h1 style='color:blue'>Hello There!</h1>"
+
+
+@application.route("/", methods=["POST"])
+def giphyp():
     if(request.form["token"] != SLACK_TOKEN):
         return status.HTTP_401_UNAUTHORIZED
 
